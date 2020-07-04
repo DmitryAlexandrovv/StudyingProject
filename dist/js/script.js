@@ -130,7 +130,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }); //Timer
 
-  const deadline = '2020-07-06';
+  const deadline = '2020-07-24';
 
   function getTimeRemaining(deadline) {
     const t = Date.parse(deadline) - Date.parse(new Date()),
