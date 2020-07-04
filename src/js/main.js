@@ -25,8 +25,8 @@ window.addEventListener('DOMContentLoaded', () => {
     hideTabs();
     showTab();
 
-    tabsParent.addEventListener('click', (event) => {
-        const target = event.target;
+    tabsParent.addEventListener('click', (e) => {
+        const target = e.target;
 
         if(target && target.classList.contains('tabheader__item')) {
             tabs.forEach( (element, index) => {
@@ -83,4 +83,44 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     setClock('.timer', deadline);
+
+    //Modal
+
+    const modal = document.querySelector('.modal'),
+          modalOpenBtns = document.querySelectorAll('[data-modal]'),
+          modalCloseBtns = document.querySelectorAll('[data-close]');
+
+    function modalClose() {
+        modal.classList.remove('show');
+        modal.classList.add('hide');
+        document.body.style.overflow = 'auto';
+    }
+
+    function modalOpen() {
+        modal.classList.remove('hide');
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    modalOpenBtns.forEach((element) => {
+        element.addEventListener('click', modalOpen);
+    });
+
+    modalCloseBtns.forEach((element) => {
+        element.addEventListener('click', modalClose);
+    });
+
+    modal.addEventListener('click', (e) => {
+        const target = e.target;
+
+        if(target && !target.classList.contains('modal-dialog')) {
+            modalClose();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if(e.code == 'Escape' && modal.classList.contains('show')) {
+            modalClose();
+        }
+    });
 });
