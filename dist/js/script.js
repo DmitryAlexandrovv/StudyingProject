@@ -173,7 +173,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const modal = document.querySelector('.modal'),
         modalOpenBtns = document.querySelectorAll('[data-modal]'),
-        modalCloseBtns = document.querySelectorAll('[data-close]'),
         modalTimerId = setTimeout(modalOpen, 15000);
 
   function modalClose() {
@@ -192,13 +191,10 @@ window.addEventListener('DOMContentLoaded', () => {
   modalOpenBtns.forEach(element => {
     element.addEventListener('click', modalOpen);
   });
-  modalCloseBtns.forEach(element => {
-    element.addEventListener('click', modalClose);
-  });
   modal.addEventListener('click', e => {
     const target = e.target;
 
-    if (target && !target.classList.contains('modal-dialog')) {
+    if (target && (target.classList.contains('modal') || target.getAttribute('data-close') == '')) {
       modalClose();
     }
   });
@@ -252,7 +248,73 @@ window.addEventListener('DOMContentLoaded', () => {
 
   new Card("img/tabs/vegy.jpg", "vegy", 'Меню "Фитнес"', 'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!', "9", ".menu .container").render();
   new Card("img/tabs/elite.jpg", "elite", 'Меню “Премиум”', 'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!', "15", ".menu .container").render();
-  new Card("img/tabs/post.jpg", "post", 'Меню "Постное"', 'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.', "13", ".menu .container").render();
+  new Card("img/tabs/post.jpg", "post", 'Меню "Постное"', 'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.', "13", ".menu .container").render(); //Forms
+
+  const forms = document.querySelectorAll('form');
+  const message = {
+    loading: 'img/form/spinner.svg',
+    success: 'Спасибо! Скоро мы с вами свяжемся',
+    failure: 'Что-то пошло не так...'
+  };
+  forms.forEach(item => {
+    postData(item);
+  });
+
+  function postData(form) {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      let statusMessage = document.createElement('img');
+      statusMessage.src = message.loading;
+      statusMessage.style.cssText = `
+                display: block;
+                margin: 0 auto;
+            `;
+      form.insertAdjacentElement('afterend', statusMessage);
+      const request = new XMLHttpRequest();
+      request.open('POST', 'server.php');
+      request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+      const formData = new FormData(form);
+      const object = {};
+      formData.forEach(function (value, key) {
+        object[key] = value;
+      });
+      const json = JSON.stringify(object);
+      request.send(json);
+      request.addEventListener('load', () => {
+        if (request.status === 200) {
+          showThanksModal(message.success);
+          form.reset();
+          setTimeout(() => {
+            statusMessage.remove();
+          }, 2000);
+        } else {
+          showThanksModal(message.failure);
+        }
+      });
+    });
+  }
+
+  function showThanksModal(message) {
+    let modal = document.querySelector('.modal'),
+        modalOld = document.querySelector('.modal__dialog');
+    modalOld.classList.add('hide');
+    modalOpen();
+    const thanksModal = document.createElement('div');
+    thanksModal.classList.add('modal__dialog');
+    thanksModal.innerHTML = `
+            <div class="modal__content">
+                <div data-close class="modal__close">x</div>
+                <div class="modal__title">${message}</div>
+            </div>
+        `;
+    modal.appendChild(thanksModal);
+    setTimeout(() => {
+      thanksModal.remove();
+      modalOld.classList.remove('hide');
+      modalOld.classList.add('show');
+      modalClose();
+    }, 4000);
+  }
 });
 
 /***/ })
