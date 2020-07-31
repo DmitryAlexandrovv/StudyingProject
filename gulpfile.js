@@ -73,10 +73,10 @@ gulp.task("watch", () => {
     gulp.watch("./src/icons/**/*.*", gulp.parallel("copy-assets"));
     gulp.watch("./src/img/**/*.*", gulp.parallel("copy-assets"));
     gulp.watch("./src/scss/**/*.scss", gulp.parallel("build-sass"));
-    gulp.watch("./src/js/**/*.js", gulp.parallel("build-js"));
+    // gulp.watch("./src/js/**/*.js", gulp.parallel("build-js"));
 });
 
-gulp.task("build", gulp.parallel("copy-html", "copy-assets", "build-sass", "build-js"));
+gulp.task("build", gulp.parallel("copy-html", "copy-assets", "build-sass"));
 
 gulp.task("prod", () => {
     gulp.src("./src/index.html")
@@ -86,32 +86,32 @@ gulp.task("prod", () => {
     gulp.src("./src/icons/**/*.*")
         .pipe(gulp.dest(dist + "/icons"));
 
-    gulp.src("./src/js/main.js")
-        .pipe(webpack({
-            mode: 'production',
-            output: {
-                filename: 'script.js'
-            },
-            module: {
-                rules: [
-                  {
-                    test: /\.m?js$/,
-                    exclude: /(node_modules|bower_components)/,
-                    use: {
-                      loader: 'babel-loader',
-                      options: {
-                        presets: [['@babel/preset-env', {
-                            debug: false,
-                            corejs: 3,
-                            useBuiltIns: "usage"
-                        }]]
-                      }
-                    }
-                  }
-                ]
-              }
-        }))
-        .pipe(gulp.dest(dist + '/js'));
+    // gulp.src("./src/js/main.js")
+    //     .pipe(webpack({
+    //         mode: 'production',
+    //         output: {
+    //             filename: 'script.js'
+    //         },
+    //         module: {
+    //             rules: [
+    //               {
+    //                 test: /\.m?js$/,
+    //                 exclude: /(node_modules|bower_components)/,
+    //                 use: {
+    //                   loader: 'babel-loader',
+    //                   options: {
+    //                     presets: [['@babel/preset-env', {
+    //                         debug: false,
+    //                         corejs: 3,
+    //                         useBuiltIns: "usage"
+    //                     }]]
+    //                   }
+    //                 }
+    //               }
+    //             ]
+    //           }
+    //     }))
+        // .pipe(gulp.dest(dist + '/js'));
     
     return gulp.src("./src/scss/style.scss")
         .pipe(sass().on('error', sass.logError))
