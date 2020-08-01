@@ -6,6 +6,7 @@ import forms from './modules/forms';
 import cards from './modules/cards';
 import calc from './modules/calc';
 import {modalOpen} from './modules/modal';
+import '../scss/style.scss';
 
 window.addEventListener('DOMContentLoaded', () => {
     const modalTimerId = setTimeout(() => modalOpen('.modal', modalTimerId),15000);
